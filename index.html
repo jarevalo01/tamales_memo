@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tamales Don Memo – Artesanales de la Abuela</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cafe: #3B1F0E;
+    --terracota: #C85A2A;
+    --amarillo: #E8A831;
+    --crema: #F7EDD8;
+    --verde: #4A7C59;
+    --blanco: #FFF9F0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--blanco);
+    color: var(--cafe);
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    background: var(--cafe);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 80%, rgba(200,90,42,0.25) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(232,168,49,0.2) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: var(--terracota);
+    color: var(--crema);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 10vw, 6rem);
+    color: var(--crema);
+    line-height: 1.05;
+    margin-bottom: 0.5rem;
+    animation: fadeDown 0.7s ease 0.1s both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--amarillo);
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    color: rgba(247,237,216,0.7);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin-bottom: 3rem;
+    animation: fadeDown 0.7s ease 0.2s both;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeDown 0.7s ease 0.3s both;
+  }
+
+  .btn-primary {
+    background: var(--terracota);
+    color: #fff;
+    padding: 14px 32px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover { background: #a84520; transform: translateY(-2px); }
+
+  .btn-outline {
+    border: 1.5px solid rgba(247,237,216,0.4);
+    color: var(--crema);
+    padding: 14px 32px;
+    border-radius: 3px;
+    font-weight: 400;
+    font-size: 0.95rem;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .btn-outline:hover { border-color: var(--crema); transform: translateY(-2px); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(247,237,216,0.4);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+
+  .hero-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: fadeDown 0.6s ease 0s both;
+    display: block;
+  }
+
+  /* ─── SECTION WRAPPER ─── */
+  section { padding: 5rem 1.5rem; }
+
+  .container { max-width: 1000px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--terracota);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    color: var(--cafe);
+  }
+
+  .section-desc {
+    font-size: 1.05rem;
+    color: #6B4226;
+    line-height: 1.7;
+    max-width: 600px;
+    font-weight: 300;
+  }
+
+  /* ─── PRODUCTOS ─── */
+  .productos-bg { background: var(--crema); }
+
+  .productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .producto-card {
+    background: var(--blanco);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(59,31,14,0.1);
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative;
+  }
+  .producto-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(59,31,14,0.12); }
+
+  .producto-img {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    position: relative;
+  }
+
+  .producto-img-verde { background: #EDF5F1; }
+  .producto-img-cafe  { background: #F5EDE6; }
+  .producto-img-rojo  { background: #FBF0EA; }
+  .producto-img-morado { background: #F0ECF7; }
+  .producto-img-amarillo { background: #FBF5E6; }
+  .producto-img-azul { background: #EAF1F8; }
+
+  .producto-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--amarillo);
+    color: var(--cafe);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+
+  .producto-body { padding: 1.25rem 1.25rem 1.5rem; }
+
+  .producto-nombre {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    margin-bottom: 0.4rem;
+    color: var(--cafe);
+  }
+
+  .producto-desc {
+    font-size: 0.88rem;
+    color: #7A5535;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-weight: 300;
+  }
+
+  .producto-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .producto-precio {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--terracota);
+  }
+
+  .btn-pedir {
+    background: var(--cafe);
+    color: var(--crema);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 2px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .btn-pedir:hover { background: var(--terracota); }
+
+  /* ─── NOSOTROS ─── */
+  .nosotros-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  @media (max-width: 640px) { .nosotros-inner { grid-template-columns: 1fr; gap: 2rem; } }
+
+  .nosotros-visual {
+    background: var(--cafe);
+    border-radius: 4px;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .nosotros-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(232,168,49,0.15) 0%, transparent 60%);
+  }
+  .nosotros-emoji { font-size: 5rem; display: block; margin-bottom: 1rem; }
+  .nosotros-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--crema);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.85;
+  }
+
+  .nosotros-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .dato {
+    background: var(--crema);
+    border-radius: 3px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .dato-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--terracota);
+    display: block;
+  }
+  .dato-label { font-size: 0.8rem; color: #7A5535; font-weight: 300; }
+
+  /* ─── PEDIDOS ─── */
+  .pedidos-bg { background: var(--cafe); }
+
+  .pedidos-bg .section-label { color: var(--amarillo); }
+  .pedidos-bg .section-title { color: var(--crema); }
+  .pedidos-bg .section-desc { color: rgba(247,237,216,0.7); }
+
+  .formas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .forma-card {
+    background: rgba(247,237,216,0.07);
+    border: 1px solid rgba(247,237,216,0.15);
+    border-radius: 4px;
+    padding: 1.5rem;
+    transition: background 0.2s;
+  }
+  .forma-card:hover { background: rgba(247,237,216,0.12); }
+
+  .forma-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+
+  .forma-titulo {
+    font-weight: 700;
+    color: var(--crema);
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .forma-desc {
+    font-size: 0.85rem;
+    color: rgba(247,237,216,0.6);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .pedido-cta {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  /* ─── FORMULARIO ─── */
+  .form-section { background: var(--blanco); }
+
+  .form-wrapper {
+    background: var(--crema);
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin-top: 2.5rem;
+    border: 1px solid rgba(59,31,14,0.1);
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .form-row { margin-bottom: 1.25rem; }
+
+  .form-row label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6B4226;
+    margin-bottom: 0.4rem;
+  }
+
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid rgba(59,31,14,0.2);
+    border-radius: 3px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.95rem;
+    background: var(--blanco);
+    color: var(--cafe);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-row input:focus,
+  .form-row select:focus,
+  .form-row textarea:focus {
+    border-color: var(--terracota);
+  }
+
+  .form-row textarea { resize: vertical; min-height: 90px; }
+
+  .form-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--terracota);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 0.5rem;
+  }
+  .form-submit:hover { background: #a84520; transform: translateY(-2px); }
+
+  .form-nota {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #9A6B45;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--cafe);
+    color: rgba(247,237,216,0.6);
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    font-size: 0.85rem;
+  }
+  footer strong { color: var(--crema); }
+  footer a { color: var(--amarillo); text-decoration: none; }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(20,8,2,0.75);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--blanco);
+    border-radius: 4px;
+    padding: 2rem;
+    max-width: 460px;
+    width: 100%;
+    position: relative;
+    animation: zoomIn 0.2s ease;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #9A6B45;
+  }
+
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+    color: var(--cafe);
+  }
+  .modal p { font-size: 0.9rem; color: #7A5535; margin-bottom: 1.25rem; line-height: 1.6; }
+
+  .modal .form-row { margin-bottom: 1rem; }
+  .modal .form-submit { margin-top: 0; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--verde);
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 200;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ─── ANIMACIONES ─── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(8px); }
+  }
+  @keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  nav.scrolled {
+    background: var(--cafe);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+  }
+  .nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--crema);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+  .nav-links { display: flex; gap: 1.5rem; }
+  .nav-links a {
+    color: rgba(247,237,216,0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--crema); }
+  @media (max-width: 500px) { .nav-links { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-brand">🫔 Don Memo</a>
+  <div class="nav-links">
+    <a href="#productos">Productos</a>
+    <a href="#pedido">Pedir</a>
+    <a href="#nosotros">Nosotros</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-icon">🫔</span>
+  <div class="hero-badge">Hechos con amor desde siempre</div>
+  <h1>Tamales<br><em>Don Memo</em></h1>
+  <p class="hero-sub">Artesanales · Receta de la abuela · Sabor de hogar</p>
+  <div class="hero-cta">
+    <a href="#productos" class="btn-primary">📋 Ver productos</a>
+    <a href="#pedido" class="btn-outline">Hacer un pedido</a>
+  </div>
+  <span class="scroll-hint">↓ scroll</span>
+</section>
+
+<!-- PRODUCTOS -->
+<section class="productos-bg" id="productos">
+  <div class="container">
+    <div class="section-label">Nuestros sabores</div>
+    <h2 class="section-title">Cada tamal, una historia</h2>
+    <p class="section-desc">Preparados con masa de maíz nixtamalizado, ingredientes frescos y el tiempo que merecen. Sin conservadores, sin prisa.</p>
+
+    <div class="productos-grid">
+
+      <div class="producto-card">
+        <div class="producto-img producto-img-rojo">🍖
+          <span class="producto-badge">⭐ Favorito</span>
+        </div>
+        <div class="producto-body">
+          <h3 class="producto-nombre">Tamal de Cerdo en Chile Rojo</h3>
+          <p class="producto-desc">Carne de cerdo guisada en salsa de chile rojo con especias. El clásico que nunca falla.</p>
+          <div class="producto-footer">
+            <span class="producto-precio">$22 c/u</span>
+            <button class="btn-pedir" onclick="abrirModal('Tamal de Cerdo en Chile Rojo')">Pedir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="producto-card">
+        <div class="producto-img producto-img-verde">🫑</div>
+        <div class="producto-body">
+          <h3 class="producto-nombre">Tamal de Rajas con Queso</h3>
+          <p class="producto-desc">Rajas de chile poblano asadas con queso oaxaqueño derretido. El preferido de los amantes del queso.</p>
+          <div class="producto-footer">
+            <span class="producto-precio">$20 c/u</span>
+            <button class="btn-pedir" onclick="abrirModal('Tamal de Rajas con Queso')">Pedir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="producto-card">
+        <div class="producto-img producto-img-cafe">🍗</div>
+        <div class="producto-body">
+          <h3 class="producto-nombre">Tamal de Pollo en Salsa Verde</h3>
+          <p class="producto-desc">Pollo deshebrado con salsa de tomatillo, chile serrano y cilantro. Fresco y lleno de sabor.</p>
+          <div class="producto-footer">
+            <span class="producto-precio">$22 c/u</span>
+            <button class="btn-pedir" onclick="abrirModal('Tamal de Pollo en Salsa Verde')">Pedir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="producto-card">
+        <div class="producto-img producto-img-morado">🫘
+          <span class="producto-badge">🌿 Veg</span>
+        </div>
+        <div class="producto-body">
+          <h3 class="producto-nombre">Tamal de Frijoles Negros</h3>
+          <p class="producto-desc">Frijoles negros refritos con epazote y chile chipotle. Una opción vegetariana llena de sabor.</p>
+          <div class="producto-footer">
+            <span class="producto-precio">$18 c/u</span>
+            <button class="btn-pedir" onclick="abrirModal('Tamal de Frijoles Negros')">Pedir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="producto-card">
+        <div class="producto-img producto-img-amarillo">🍬
+          <span class="producto-badge">🍫 Dulce</span>
+        </div>
+        <div class="producto-body">
+          <h3 class="producto-nombre">Tamal Dulce de Elote</h3>
+          <p class="producto-desc">Masa de elote fresco con azúcar y canela, envuelto en hoja de maíz. Un postre tradicional.</p>
+          <div class="producto-footer">
+            <span class="producto-precio">$20 c/u</span>
+            <button class="btn-pedir" onclick="abrirModal('Tamal Dulce de Elote')">Pedir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="producto-card">
+        <div class="producto-img producto-img-azul">🌶️</div>
+        <div class="producto-body">
+          <h3 class="producto-nombre">Tamal de Chile y Queso</h3>
+          <p class="producto-desc">Queso panela con rajas de chile jalapeño. Para los que gustan del picante con carácter.</p>
+          <div class="producto-footer">
+            <span class="producto-precio">$20 c/u</span>
+            <button class="btn-pedir" onclick="abrirModal('Tamal de Chile y Queso')">Pedir</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Nota docena -->
+    <div style="margin-top: 2rem; background: var(--blanco); border: 1px solid rgba(59,31,14,0.1); border-radius: 3px; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 12px; max-width: 500px;">
+      <span style="font-size: 1.5rem;">🎁</span>
+      <div>
+        <div style="font-weight: 700; font-size: 0.95rem; color: var(--cafe);">Pedidos por docena</div>
+        <div style="font-size: 0.85rem; color: #7A5535; font-weight: 300;">Haz tu pedido de 12 o más tamales con un día de anticipación y te damos un precio especial. ¡Pregunta!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros">
+  <div class="container">
+    <div class="nosotros-inner">
+      <div>
+        <div class="section-label">Nuestra historia</div>
+        <h2 class="section-title">Hecho con las manos que saben</h2>
+        <p class="section-desc">Don Memo lleva más de 30 años preparando tamales con la receta que le enseñó su madre. Cada uno se hace a mano, con ingredientes de temporada y el cariño de siempre. No hay máquinas, no hay atajos.</p>
+        <div class="nosotros-data">
+          <div class="dato"><span class="dato-num">30+</span><span class="dato-label">Años de tradición</span></div>
+          <div class="dato"><span class="dato-num">6</span><span class="dato-label">Sabores artesanales</span></div>
+          <div class="dato"><span class="dato-num">100%</span><span class="dato-label">Hecho a mano</span></div>
+          <div class="dato"><span class="dato-num">0</span><span class="dato-label">Conservadores</span></div>
+        </div>
+      </div>
+      <div class="nosotros-visual">
+        <span class="nosotros-emoji">👨‍🍳</span>
+        <p class="nosotros-quote">"Un buen tamal no se apura. Se hace con tiempo, con maíz de calidad y con ganas de darle gusto a la gente."</p>
+        <br>
+        <p style="color: var(--amarillo); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;">— Don Memo</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO PEDIR -->
+<section class="pedidos-bg" id="pedido">
+  <div class="container">
+    <div class="section-label">Es muy fácil</div>
+    <h2 class="section-title">¿Cómo hago mi pedido?</h2>
+    <p class="section-desc">Puedes pedirlos como más te acomode. Don Memo está listo para atenderte.</p>
+
+    <div class="formas-grid">
+      <div class="forma-card">
+        <span class="forma-icon">📞</span>
+        <div class="forma-titulo">Por llamada</div>
+        <div class="forma-desc">Llámanos directamente y dinos qué sabores quieres y en qué cantidad. Es la forma más rápida.</div>
+      </div>
+      <div class="forma-card">
+        <span class="forma-icon">💬</span>
+        <div class="forma-titulo">Por WhatsApp</div>
+        <div class="forma-desc">Escríbenos tu pedido por WhatsApp y te confirmamos disponibilidad y hora de entrega.</div>
+      </div>
+      <div class="forma-card">
+        <span class="forma-icon">📝</span>
+        <div class="forma-titulo">Formulario aquí</div>
+        <div class="forma-desc">Llena el formulario de abajo con tus datos y tu pedido. Te contactamos para confirmar.</div>
+      </div>
+      <div class="forma-card">
+        <span class="forma-icon">🚶</span>
+        <div class="forma-titulo">En el puesto</div>
+        <div class="forma-desc">Pásate a visitarnos directamente. Pregunta la ubicación exacta al contactarnos.</div>
+      </div>
+    </div>
+
+    <div class="pedido-cta">
+      <p style="color: rgba(247,237,216,0.5); font-size: 0.85rem; margin-bottom: 1rem;">Aceptamos efectivo y transferencia (QR disponible en el puesto)</p>
+      <a href="https://wa.me/521XXXXXXXXXX?text=Hola%20Don%20Memo%2C%20quiero%20hacer%20un%20pedido%20de%20tamales%20%F0%9F%AB%94" target="_blank" class="btn-primary" style="margin-right: 0.5rem;">
+        💬 Escribir por WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULARIO -->
+<section class="form-section">
+  <div class="container">
+    <div class="section-label">Pedido en línea</div>
+    <h2 class="section-title">Escríbenos tu pedido</h2>
+    <p class="section-desc">Llena este formulario y nos ponemos en contacto contigo para confirmar tu pedido.</p>
+
+    <div class="form-wrapper">
+      <div class="form-row">
+        <label>Tu nombre</label>
+        <input type="text" id="nombre" placeholder="¿Cómo te llamas?" />
+      </div>
+      <div class="form-row">
+        <label>Teléfono o WhatsApp</label>
+        <input type="tel" id="telefono" placeholder="10 dígitos" />
+      </div>
+      <div class="form-row">
+        <label>¿Cuándo los necesitas?</label>
+        <input type="date" id="fecha" />
+      </div>
+      <div class="form-row">
+        <label>Tu pedido</label>
+        <textarea id="pedido-txt" placeholder="Ejemplo: 6 de cerdo en chile rojo, 4 de rajas con queso, 2 de elote..."></textarea>
+      </div>
+      <div class="form-row">
+        <label>¿Cómo prefieres que te contactemos?</label>
+        <select id="contacto">
+          <option value="">Selecciona una opción</option>
+          <option value="whatsapp">Por WhatsApp</option>
+          <option value="llamada">Por llamada</option>
+        </select>
+      </div>
+      <button class="form-submit" onclick="enviarPedido()">📤 Enviar mi pedido por WhatsApp</button>
+      <p class="form-nota">Al enviar, se abrirá WhatsApp con tu pedido listo. Don Memo te confirma disponibilidad y precio total.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>Tamales Don Memo</strong> · Artesanales con sabor de hogar</p>
+  <p style="margin-top: 0.5rem;">📞 <a href="tel:521XXXXXXXXXX">55 XXXX XXXX</a> &nbsp;·&nbsp; 💬 <a href="https://wa.me/521XXXXXXXXXX">WhatsApp</a></p>
+  <p style="margin-top: 1rem; font-size: 0.75rem; opacity: 0.5;">Hecho con ❤️ para Don Memo</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModal()">✕</button>
+    <h3 id="modal-titulo">Tamal de Cerdo</h3>
+    <p>Dinos cuántos necesitas y te contactamos por WhatsApp para confirmar tu pedido.</p>
+    <div class="form-row">
+      <label>Tu nombre</label>
+      <input type="text" id="m-nombre" placeholder="¿Cómo te llamas?" />
+    </div>
+    <div class="form-row">
+      <label>Cantidad</label>
+      <input type="number" id="m-cantidad" min="1" value="6" placeholder="¿Cuántos tamales?" />
+    </div>
+    <div class="form-row">
+      <label>Tu teléfono</label>
+      <input type="tel" id="m-tel" placeholder="Para confirmarte el pedido" />
+    </div>
+    <button class="form-submit" onclick="enviarModal()">💬 Pedir por WhatsApp</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ ¡Redirigiendo a WhatsApp!</div>
+
+<script>
+  // NAV scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Modal
+  let productoActual = '';
+  function abrirModal(nombre) {
+    productoActual = nombre;
+    document.getElementById('modal-titulo').textContent = nombre;
+    document.getElementById('modal').classList.add('active');
+  }
+  function cerrarModal() {
+    document.getElementById('modal').classList.remove('active');
+  }
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModal();
+  });
+
+  function enviarModal() {
+    const nombre   = document.getElementById('m-nombre').value.trim();
+    const cantidad = document.getElementById('m-cantidad').value;
+    const tel      = document.getElementById('m-tel').value.trim();
+
+    if (!nombre || !cantidad) {
+      alert('Por favor completa tu nombre y la cantidad.');
+      return;
+    }
+
+    const msg = `Hola Don Memo 🫔, soy *${nombre}* y quisiera pedir *${cantidad} tamales de ${productoActual}*. Mi teléfono es ${tel || 'te lo doy después'}. ¿Están disponibles?`;
+    const url = `https://wa.me/521XXXXXXXXXX?text=${encodeURIComponent(msg)}`;
+    cerrarModal();
+    mostrarToast();
+    setTimeout(() => window.open(url, '_blank'), 600);
+  }
+
+  function enviarPedido() {
+    const nombre   = document.getElementById('nombre').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const fecha    = document.getElementById('fecha').value;
+    const pedido   = document.getElementById('pedido-txt').value.trim();
+
+    if (!nombre || !pedido) {
+      alert('Por favor llena al menos tu nombre y el pedido.');
+      return;
+    }
+
+    let msg = `Hola Don Memo 🫔, soy *${nombre}*`;
+    if (telefono) msg += `, mi tel es ${telefono}`;
+    if (fecha)    msg += `. Lo necesito para el *${fecha}*`;
+    msg += `.\n\nMi pedido:\n${pedido}\n\n¿Puede ser? 😊`;
+
+    const url = `https://wa.me/521XXXXXXXXXX?text=${encodeURIComponent(msg)}`;
+    mostrarToast();
+    setTimeout(() => window.open(url, '_blank'), 600);
+  }
+
+  function mostrarToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
