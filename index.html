@@ -824,10 +824,22 @@
 <div class="toast" id="toast">✅ ¡Redirigiendo a WhatsApp!</div>
 
 <script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxe152Qco1XKMsT6QUAdUmS5i12BlAc0IIm27T0e99S8n6v0Q_vLMh2-znPY0c3WRdx/exec';
+
   // NAV scroll effect
   window.addEventListener('scroll', () => {
     document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
   });
+
+  // Guardar pedido en Google Sheets
+  function guardarEnSheets(datos) {
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos)
+    }).catch(() => {});
+  }
 
   // Modal
   let productoActual = '';
@@ -853,10 +865,19 @@
       return;
     }
 
+    // Guardar en Google Sheets
+    guardarEnSheets({
+      nombre:   nombre,
+      telefono: tel || 'No proporcionado',
+      pedido:   productoActual,
+      cantidad: cantidad,
+      sabor:    productoActual
+    });
+
     const msg = `Hola Don Memo 🫔, soy *${nombre}* y quisiera pedir *${cantidad} tamales de ${productoActual}*. Mi teléfono es ${tel || 'te lo doy después'}. ¿Están disponibles?`;
     const url = `https://wa.me/521XXXXXXXXXX?text=${encodeURIComponent(msg)}`;
     cerrarModal();
-    mostrarToast();
+    mostrarToast('✅ ¡Pedido registrado! Redirigiendo a WhatsApp...');
     setTimeout(() => window.open(url, '_blank'), 600);
   }
 
@@ -871,18 +892,28 @@
       return;
     }
 
+    // Guardar en Google Sheets
+    guardarEnSheets({
+      nombre:   nombre,
+      telefono: telefono || 'No proporcionado',
+      pedido:   pedido,
+      cantidad: 'Ver descripción',
+      sabor:    pedido
+    });
+
     let msg = `Hola Don Memo 🫔, soy *${nombre}*`;
     if (telefono) msg += `, mi tel es ${telefono}`;
     if (fecha)    msg += `. Lo necesito para el *${fecha}*`;
     msg += `.\n\nMi pedido:\n${pedido}\n\n¿Puede ser? 😊`;
 
     const url = `https://wa.me/521XXXXXXXXXX?text=${encodeURIComponent(msg)}`;
-    mostrarToast();
+    mostrarToast('✅ ¡Pedido registrado! Redirigiendo a WhatsApp...');
     setTimeout(() => window.open(url, '_blank'), 600);
   }
 
-  function mostrarToast() {
+  function mostrarToast(msg) {
     const t = document.getElementById('toast');
+    t.textContent = msg || '✅ ¡Listo!';
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3000);
   }
