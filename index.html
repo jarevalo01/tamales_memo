@@ -68,8 +68,10 @@
       </div>
       <div class="nosotros-visual">
         <img src="Don_memo_chef.png" alt="Don Memo" style="width:100%; height:100%; object-fit:cover; object-position: center top; display:block; position:relative; z-index:1; border-radius:4px;">
-        <p style="color: var(--amarillo); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; text-align:center; margin-top: 0.75rem;">— Don Memo</p>
-	<p class="nosotros-quote">"Un buen tamal no se apura. Se hace con tiempo, con maíz de calidad y con ganas de darle gusto a la gente."</p>
+        <div class="nosotros-quote-overlay">
+          <p class="nosotros-quote">"Un buen tamal no se apura. Se hace con tiempo, con maíz de calidad y con ganas de darle gusto a la gente."</p>
+          <p class="nosotros-quote-autor">— Don Memo</p>
+        </div>
       </div>
     </div>
   </div>
@@ -162,28 +164,6 @@
   <p style="margin-top: 0.5rem;">📞 <a href="tel:521XXXXXXXXXX">55 XXXX XXXX</a> &nbsp;·&nbsp; 💬 <a href="https://wa.me/521XXXXXXXXXX">WhatsApp</a></p>
   <p style="margin-top: 1rem; font-size: 0.75rem; opacity: 0.5;">Hecho con ❤️ para Don Memo</p>
 </footer>
-
-<!-- MODAL -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <button class="modal-close" onclick="cerrarModal()">✕</button>
-    <h3 id="modal-titulo">Tamal de Cerdo</h3>
-    <p>Dinos cuántos necesitas y te contactamos por WhatsApp para confirmar tu pedido.</p>
-    <div class="form-row">
-      <label>Tu nombre</label>
-      <input type="text" id="m-nombre" placeholder="¿Cómo te llamas?" />
-    </div>
-    <div class="form-row">
-      <label>Cantidad</label>
-      <input type="number" id="m-cantidad" min="1" value="6" placeholder="¿Cuántos tamales?" />
-    </div>
-    <div class="form-row">
-      <label>Tu teléfono</label>
-      <input type="tel" id="m-tel" placeholder="Para confirmarte el pedido" />
-    </div>
-    <button class="form-submit" onclick="enviarModal()">💬 Pedir por WhatsApp</button>
-  </div>
-</div>
 
 <!-- MODAL CONFIRMACIÓN -->
 <div class="modal-overlay" id="modal-confirm">

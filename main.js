@@ -15,51 +15,55 @@ const PRODUCTOS = [
     id: 'mole',    nombre: 'Tamal Pollo en Mole',
     desc:    'Carne de pollo guisada en mole rojo con especias. El clásico que nunca falla.',
     precio:  25,   emoji: '🍖',  colorImg: 'producto-img-rojo',    badge: '⭐ Favorito',
+    img: 'imgs/tamal_mole.jpg',
   },
   {
     id: 'rajas',   nombre: 'Tamal de Rajas con Queso',
     desc:    'Rajas de chile asadas con queso blanco derretido. El preferido de los amantes del queso.',
     precio:  25,   emoji: '🫑',  colorImg: 'producto-img-verde',   badge: null,
+    img: 'imgs/tamal_rajas.jpg',
   },
   {
     id: 'pollo',   nombre: 'Tamal de Pollo en Salsa Verde',
     desc:    'Pollo deshebrado con salsa de tomate, chile serrano y cilantro. Fresco y lleno de sabor.',
     precio:  25,   emoji: '🍗',  colorImg: 'producto-img-cafe',    badge: null,
+    img: 'imgs/tamal_pollo_verde.jpg',
   },
   {
     id: 'champ',   nombre: 'Tamal de Champiñones con Queso',
     desc:    'Champiñones con salsa de tomate, chile serrano y cilantro. Una opción vegetariana llena de sabor.',
     precio:  25,   emoji: '🫘',  colorImg: 'producto-img-morado',  badge: '🌿 Veg',
+    img: 'imgs/tamal_champinones.jpg',
   },
   {
     id: 'costvert', nombre: 'Tamal de Costilla con Nopales Salsa Verde',
     desc:    'Costilla de Cerdo en salsa de tomate, chile serrano y cilantro.',
     precio:  25,   emoji: '🫑',  colorImg: 'producto-img-verde',   badge: null,
+    img: 'imgs/tamal_costilla_verde.jpg',
   },
   {
     id: 'costroja', nombre: 'Tamal de Costilla Salsa Roja',
     desc:    'Costilla de Cerdo en salsa de jitomate, chile serrano y cilantro.',
     precio:  25,   emoji: '🍖',  colorImg: 'producto-img-rojo',    badge: '⭐ Favorito',
+    img: 'imgs/tamal_costilla_roja.jpg',
   },
   {
     id: 'chicharron', nombre: 'Tamal de Chicharron Prensado',
     desc:    'Chicharrón prensado guisado en adobo de chiles secos (ancho, guajillo) con comino y orégano.',
     precio:  25,   emoji: '🍖',  colorImg: 'producto-img-rojo',    badge: '⭐ Favorito',
+    img: 'imgs/tamal_chicharron.jpg',
   },
   {
     id: 'zarza',   nombre: 'Tamal Dulce de Zarzamora',
     desc:    'Masa de elote fresco con azúcar y canela, envuelto en hoja de maíz. Un postre tradicional.',
     precio:  25,   emoji: '🍬',  colorImg: 'producto-img-amarillo', badge: '🍫 Dulce',
+    img: 'imgs/tamal_zarzamora.jpg',
   },
   {
     id: 'choco',   nombre: 'Tamal Dulce de Chocolate',
     desc:    'Masa dulce de maíz con chocolate. Una variante dulce y esponjosa.',
     precio:  25,   emoji: '🌶️', colorImg: 'producto-img-azul',    badge: null,
-  },
-  {
-    id: 'fressa',   nombre: 'Tamal Dulce de Fresa',
-    desc:    'Masa dulce de maíz con Fresa. Una variante dulce y esponjosa.',
-    precio:  25,   emoji: '🌶️', colorImg: 'producto-img-azul',    badge: null,
+    img: 'imgs/tamal_chocolate.jpg',
   },
 ];
 // ────────────────────────────────────────────────────────────────────────────
@@ -88,22 +92,37 @@ function renderChecklist() {
   `).join('');
 }
 
-// Genera el HTML de las tarjetas de productos
+// Genera el HTML de las tarjetas de productos (overlay deslizante)
 function renderProductos() {
   const contenedor = document.getElementById('productos-grid');
   contenedor.innerHTML = PRODUCTOS.map(p => `
     <div class="producto-card">
-      <div class="producto-img ${p.colorImg}">${p.emoji}
-        ${p.badge ? `<span class="producto-badge">${p.badge}</span>` : ''}
-      </div>
-      <div class="producto-body">
-        <h3 class="producto-nombre">${p.nombre}</h3>
-        <p class="producto-desc">${p.desc}</p>
-        <div class="producto-footer">
-          <span class="producto-precio">$${p.precio} c/u</span>
-          <button class="btn-pedir" onclick="abrirModal('${p.nombre}')">Pedir</button>
+
+      <!-- FRENTE -->
+      <div class="producto-card-front">
+        <div class="producto-img${p.img ? '' : ' no-img'}">
+          ${p.img
+            ? `<img src="${p.img}" alt="${p.nombre}">`
+            : `<span class="producto-img-emoji">${p.emoji}</span>`
+          }
+          ${p.badge ? `<span class="producto-badge">${p.badge}</span>` : ''}
+          <div class="producto-img-label">
+            <span class="producto-nombre">${p.nombre}</span>
+            <span class="producto-precio">$${p.precio}</span>
+          </div>
         </div>
       </div>
+
+      <!-- OVERLAY -->
+      <div class="producto-card-back">
+        <span class="producto-back-emoji">${p.emoji}</span>
+        <span class="producto-back-nombre">${p.nombre}</span>
+        <p class="producto-back-desc">${p.desc}</p>
+        <span class="producto-back-precio">$${p.precio} c/u</span>
+        <button class="btn-pedir" onclick="seleccionarEnFormulario('${p.id}')">Pedir</button>
+        <span class="flip-hint">toca para ver más</span>
+      </div>
+
     </div>
   `).join('');
 }
@@ -114,9 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
   renderChecklist();
   document.getElementById('contador-sabores').textContent = PRODUCTOS.length;
 
-  // Cerrar modal al hacer clic fuera
-  document.getElementById('modal').addEventListener('click', function(e) {
-    if (e.target === this) cerrarModal();
+  // Cerrar modales al hacer clic fuera
+  document.getElementById('modal-confirm').addEventListener('click', function(e) {
+    if (e.target === this) cerrarConfirm();
+  });
+  document.getElementById('modal-anticipo').addEventListener('click', function(e) {
+    if (e.target === this) cerrarAnticipo();
   });
 });
 
@@ -278,35 +300,23 @@ function cerrarAnticipo() {
   document.getElementById('modal-anticipo').classList.remove('active');
 }
 
-// Modal (botones de tarjetas individuales)
-let productoActual = '';
-function abrirModal(nombre) {
-  productoActual = nombre;
-  document.getElementById('modal-titulo').textContent = nombre;
-  document.getElementById('modal').classList.add('active');
-}
-function cerrarModal() {
-  document.getElementById('modal').classList.remove('active');
-}
-
-function enviarModal() {
-  const nombre   = document.getElementById('m-nombre').value.trim();
-  const cantidad = parseInt(document.getElementById('m-cantidad').value);
-  const tel      = document.getElementById('m-tel').value.trim();
-  if (!nombre || !cantidad) { alert('Por favor completa tu nombre y la cantidad.'); return; }
-
-  // Mismo formato: items array con un solo producto
-  guardarEnSheets({
-    nombre:   nombre,
-    telefono: tel || 'No proporcionado',
-    items:    [{ sabor: productoActual, cantidad: cantidad }]
-  });
-
-  const msg = 'Hola Don Memo 🫔, soy *' + nombre + '* y quisiera pedir *' + cantidad + ' tamales de ' + productoActual + '*. Mi teléfono es ' + (tel || 'te lo doy después') + '. ¿Están disponibles?';
-  const url = 'https://wa.me/521XXXXXXXXXX?text=' + encodeURIComponent(msg);
-  cerrarModal();
-  mostrarToast('✅ ¡Pedido registrado! Redirigiendo...');
-  setTimeout(() => window.open(url, '_blank'), 600);
+// Botón "Pedir" de las tarjetas: scroll al formulario y pre-selecciona el producto
+function seleccionarEnFormulario(id) {
+  // Marcar el checkbox y habilitar cantidad
+  const checkbox = document.getElementById('ch-' + id);
+  if (checkbox && !checkbox.checked) {
+    checkbox.checked = true;
+    toggleItem(id);
+  }
+  // Scroll suave al formulario
+  document.getElementById('form-pedido').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Parpadeo visual para que el cliente note la fila seleccionada
+  const fila = document.getElementById('ci-' + id);
+  if (fila) {
+    fila.style.transition = 'background 0.1s';
+    fila.style.background = 'rgba(200,90,42,0.18)';
+    setTimeout(() => { fila.style.background = ''; }, 900);
+  }
 }
 
 function mostrarToast(msg) {
