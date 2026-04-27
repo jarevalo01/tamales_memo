@@ -1,6 +1,13 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxe152Qco1XKMsT6QUAdUmS5i12BlAc0IIm27T0e99S8n6v0Q_vLMh2-znPY0c3WRdx/exec';
 
-// ─── CATÁLOGO DE PRODUCTOS ───────────────────────────────────────────────────
+const COLOR_MAP = {
+  'producto-img-verde':    '#EDF5F1',
+  'producto-img-cafe':     '#F5EDE6',
+  'producto-img-rojo':     '#FBF0EA',
+  'producto-img-morado':   '#F0ECF7',
+  'producto-img-amarillo': '#FBF5E6',
+  'producto-img-azul':     '#EAF1F8',
+};
 // Para agregar un producto nuevo solo añade un objeto a este arreglo.
 // Campos:
 //   id        → identificador único (sin espacios)
@@ -65,6 +72,12 @@ const PRODUCTOS = [
     precio:  25,   emoji: '🌶️', colorImg: 'producto-img-azul',    badge: null,
     img: 'imgs/tamal_chocolate.jpg',
   },
+  {
+    id: 'pina',   nombre: 'Tamal Dulce de pina',
+    desc:    'Masa dulce de maíz con pina. Una variante dulce y esponjosa.',
+    precio:  25,   emoji: '🌶️', colorImg: 'producto-img-azul',    badge: null,
+    img: 'imgs/tamal_chocolate.jpg',
+  },
 ];
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -100,11 +113,12 @@ function renderProductos() {
 
       <!-- FRENTE -->
       <div class="producto-card-front">
-        <div class="producto-img${p.img ? '' : ' no-img'}">
+        <div class="producto-img${p.img ? '' : ' no-img'}" style="background-color:${COLOR_MAP[p.colorImg] || '#F5EDE6'};">
           ${p.img
-            ? `<img src="${p.img}" alt="${p.nombre}">`
-            : `<span class="producto-img-emoji">${p.emoji}</span>`
+            ? `<img src="${p.img}" alt="${p.nombre}" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none';this.parentElement.classList.add('no-img')">`
+            : ''
           }
+          <span class="producto-img-emoji">${p.emoji}</span>
           ${p.badge ? `<span class="producto-badge">${p.badge}</span>` : ''}
           <div class="producto-img-label">
             <span class="producto-nombre">${p.nombre}</span>
@@ -133,7 +147,46 @@ document.addEventListener('DOMContentLoaded', () => {
   renderChecklist();
   document.getElementById('contador-sabores').textContent = PRODUCTOS.length;
 
-  // Cerrar modales al hacer clic fuera
+  // Botón de música flotante
+  const audio     = document.getElementById('bg-audio');
+  const musicBtn  = document.getElementById('music-btn');
+  const musicIcon = musicBtn.querySelector('.music-icon');
+
+  // Arranca silenciado (los navegadores sí permiten autoplay muted)
+  audio.volume = 0;
+  audio.play().catch(() => {});
+
+  // Fade-in suave al primer gesto del usuario
+  let fadeDone = false;
+  function fadeIn() {
+    if (fadeDone) return;
+    fadeDone = true;
+    audio.muted = false; // necesario en Safari
+    musicBtn.classList.add('playing');
+    const step = () => {
+      if (audio.volume < 0.35) {
+        audio.volume = Math.min(audio.volume + 0.01, 0.35);
+        setTimeout(step, 60);
+      }
+    };
+    step();
+  }
+  document.addEventListener('click',  fadeIn, { once: true });
+  document.addEventListener('scroll', fadeIn, { once: true });
+
+  musicBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    fadeIn(); // por si el primer clic es justo el botón
+    if (audio.paused) {
+      audio.play();
+      musicBtn.classList.add('playing');
+      musicIcon.textContent = '🎵';
+    } else {
+      audio.pause();
+      musicBtn.classList.remove('playing');
+      musicIcon.textContent = '🔇';
+    }
+  });
   document.getElementById('modal-confirm').addEventListener('click', function(e) {
     if (e.target === this) cerrarConfirm();
   });

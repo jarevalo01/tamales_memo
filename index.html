@@ -9,6 +9,16 @@
 </head>
 <body>
 
+<!-- AUDIO DE FONDO -->
+<audio id="bg-audio" loop muted>
+  <source src="mimosa.mp3" type="audio/mpeg">
+</audio>
+
+<!-- CONTROL FLOTANTE DE MÚSICA -->
+<button class="music-btn" id="music-btn" title="Música de fondo">
+  <span class="music-icon">🎵</span>
+</button>
+
 <!-- NAV -->
 <nav id="nav">
   <a href="#" class="nav-brand">🫔 Don Memo</a>
@@ -21,6 +31,9 @@
 
 <!-- HERO -->
 <section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="tamales_video_header.mp4" type="video/mp4">
+  </video>
   <span class="hero-icon">🫔</span>
   <div class="hero-badge">Hechos con amor desde siempre</div>
   <h1>Tamales<br><em>Don Memo</em></h1>

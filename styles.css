@@ -16,19 +16,25 @@ body { font-family: 'Lato', sans-serif; background: var(--blanco); color: var(--
   min-height: 100vh; position: relative;
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; text-align: center; padding: 2rem; overflow: hidden;
-  background-image: url('fondo_header.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: var(--cafe);
+}
+/* video de fondo */
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  z-index: 0;
 }
 .hero::before {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; inset: 0; z-index: 1;
   background:
     linear-gradient(to bottom, rgba(30,10,2,0.72) 0%, rgba(30,10,2,0.60) 60%, rgba(30,10,2,0.80) 100%),
     radial-gradient(circle at 20% 80%, rgba(200,90,42,0.20) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(232,168,49,0.12) 0%, transparent 50%);
   pointer-events: none;
 }
+/* todo el contenido del hero debe estar sobre el overlay */
+.hero > *:not(.hero-video) { position: relative; z-index: 2; }
 .hero-badge {
   display: inline-block; background: var(--terracota); color: var(--crema);
   font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
@@ -91,38 +97,58 @@ section { padding: 5rem 1.5rem; }
 .producto-card-front {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
-  background: var(--blanco);
 }
 .producto-img {
   flex: 1;
   position: relative;
   overflow: hidden;
-  background-color: #2a1208;
+  isolation: isolate;
 }
+/* foto real */
 .producto-img img {
+  position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover; object-position: center;
   display: block;
-  transition: transform 0.5s ease;
+  z-index: 1;
+  transition: transform 0.95s ease;
 }
 .producto-card:hover .producto-img img {
   transform: scale(1.05);
 }
-/* overlay degradado sobre la foto */
+/* overlay oscuro — encima de la foto, debajo del texto */
 .producto-img::after {
   content: '';
   position: absolute; inset: 0;
+  z-index: 2;
   background: linear-gradient(
     to bottom,
-    rgba(20,6,0,0.15) 0%,
-    rgba(20,6,0,0.55) 60%,
-    rgba(20,6,0,0.80) 100%
+    rgba(20,6,0,0.10) 0%,
+    rgba(20,6,0,0.50) 55%,
+    rgba(20,6,0,0.82) 100%
+  );
+  pointer-events: none;
+}
+/* fallback: sin imagen — emoji centrado */
+.producto-img-emoji {
+  position: absolute; inset: 0;
+  z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 4.5rem;
+}
+/* overlay más suave cuando solo hay emoji */
+.producto-img.no-img { background: #F5EDE6; }
+.producto-img.no-img::after {
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,
+    rgba(20,6,0,0.50) 100%
   );
 }
-/* nombre encima del overlay */
+/* nombre y precio — siempre arriba de todo */
 .producto-img-label {
   position: absolute; bottom: 0; left: 0; right: 0;
-  z-index: 2;
+  z-index: 4;
   padding: 0.65rem 1rem;
   display: flex; align-items: flex-end; justify-content: space-between;
   gap: 0.5rem;
@@ -131,36 +157,19 @@ section { padding: 5rem 1.5rem; }
   font-family: 'Playfair Display', serif;
   font-size: 1rem; line-height: 1.2;
   color: #fff;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
 }
 .producto-precio {
   font-size: 0.95rem; font-weight: 700;
   color: var(--amarillo); white-space: nowrap;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
 /* badge */
 .producto-badge {
-  position: absolute; top: 10px; right: 10px; z-index: 3;
+  position: absolute; top: 10px; right: 10px; z-index: 5;
   background: var(--amarillo); color: var(--cafe);
   font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em;
   text-transform: uppercase; padding: 3px 10px; border-radius: 2px;
-}
-/* fallback emoji (si no hay imagen) */
-.producto-img-emoji {
-  position: absolute; inset: 0; z-index: 1;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 4.5rem;
-}
-/* cuando hay emoji-fallback, quitar el overlay oscuro y usar fondo de color */
-.producto-img.no-img {
-  background: #F5EDE6;
-}
-.producto-img.no-img::after {
-  background: linear-gradient(
-    to bottom,
-    transparent 40%,
-    rgba(20,6,0,0.55) 100%
-  );
 }
 
 /* OVERLAY — entra barriendo desde abajo */
@@ -169,7 +178,7 @@ section { padding: 5rem 1.5rem; }
   height: 100%;
   background: var(--cafe);
   transform: translateY(100%);
-  transition: transform 0.5s cubic-bezier(0.32, 0, 0.15, 1);
+  transition: transform 0.95s cubic-bezier(0.32, 0, 0.15, 1);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   padding: 1.75rem 1.5rem;
@@ -229,7 +238,7 @@ section { padding: 5rem 1.5rem; }
 .dato-label { font-size: 0.8rem; color: #7A5535; font-weight: 300; }
 
 /* CÓMO PEDIR */
-.pedidos-bg { background: var(--cafe); }
+.pedidos-bg { position: relative; }
 .pedidos-bg .section-label { color: var(--amarillo); }
 .pedidos-bg .section-title { color: var(--crema); }
 .pedidos-bg .section-desc { color: rgba(247,237,216,0.7); }
@@ -409,3 +418,52 @@ nav.scrolled { background: var(--cafe); box-shadow: 0 2px 16px rgba(0,0,0,0.3); 
 .nav-links a { color: rgba(247,237,216,0.7); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.08em; font-weight: 700; text-transform: uppercase; transition: color 0.2s; }
 .nav-links a:hover { color: var(--crema); }
 @media (max-width: 500px) { .nav-links { display: none; } }
+
+/* FONDO SECCIÓN NOSOTROS */
+#nosotros {
+  background-image: url('fondo_nosotros.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+}
+#nosotros::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(247, 237, 216, 0.90);
+  pointer-events: none;
+}
+#nosotros .container {
+  position: relative; z-index: 1;
+}
+
+/* FONDO SECCIÓN CÓMO PEDIR */
+#pedido {
+  background-image: url('fondo_nosotros.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+}
+#pedido::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(30, 10, 2, 0.82);
+  pointer-events: none;
+}
+#pedido .container {
+  position: relative; z-index: 1;
+}
+.music-btn {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--cafe); border: 1.5px solid rgba(247,237,216,0.2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  transition: background 0.2s, transform 0.15s, border-color 0.2s;
+}
+.music-btn:hover { background: var(--terracota); transform: scale(1.08); }
+.music-btn.playing { border-color: var(--amarillo); }
+.music-btn.playing .music-icon { display: inline-block; animation: musicPulse 1.2s ease-in-out infinite; }
+@keyframes musicPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
